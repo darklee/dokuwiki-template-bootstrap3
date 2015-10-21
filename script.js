@@ -196,3 +196,33 @@ jQuery(document).ready(function() {
   }
 
 });
+//##Custom##
+dw_page.sectionHighlight = function() {
+    jQuery("#dokuwiki__content").on("click", ".sectionheadeditori", function(){
+        var section = jQuery(this).data("section");
+        var form = jQuery(".editbutton_" + section).find("form");
+        form.submit();
+    });
+    jQuery('form.btn_secedit').each(function(index, form){
+        var $form = jQuery(form);
+        var $fp = $form.parent();
+        var $tgt = $fp
+          , nr = $tgt.attr('class').match(/(\s+|^)editbutton_(\d+)(\s+|$)/)[2]
+          , $highlight = jQuery()
+          , $highlightWrap = jQuery('<div class="section_highlight"></div>');
+        while ($tgt.length > 0 && !($tgt.hasClass('sectionedit' + nr) || $tgt.find('.sectionedit' + nr).length)) {
+            $tgt = $tgt.prev();
+            $highlight = $highlight.add($tgt);
+        }
+        var $sectionHead = jQuery('.sectionedit' + nr);
+        $sectionHead.append("<i class='fa fa-edit sectionheadeditori' data-section='" + nr + "' style='vertical-align:bottom;cursor:pointer;'></i>");
+        $form.mouseover(function(){
+            $highlight.filter(':last').before($highlightWrap);
+            $highlight.detach().appendTo($highlightWrap);
+        }).mouseout(function(){
+            var $highlightWrap = jQuery('.section_highlight');
+            $highlightWrap.before($highlightWrap.children().detach());
+            $highlightWrap.detach();
+        });
+    });
+};
